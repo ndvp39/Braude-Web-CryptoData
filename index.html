@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>BTC/USD Prices</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+  </head>
+  <body>
+    <div id="app" class="max-w-[1000px] mx-auto">
+      <h1 class="font-bold text-3xl text-center text-blue-600 my-4">
+        Cryptocurrency Data
+      </h1>
+    </div>
+    <script>
+
+      const tableFields = ["image", "key", "name", "summary"]
+
+      const row = (key, val, i) => {
+        return `<tr>${tableFields.map((field) => cell(key, field, val)).join("")}</tr>`;
+      }
+
+      const cell = (key, field, val) => {
+        switch (field) {
+          case "image":
+            return `<td class="w-16 p-2 align-top border-b border-gray-200"><img class="h-full w-auto" src="${val[field]}" /></td>`;
+          case "key":
+            return `<td class="p-2 align-top border-b border-gray-200">${key}</td>`;
+          case "name":
+            return `<td class="p-2 align-top border-b border-gray-200"><a class="text-blue-400 font-bold hover:underline" href="${val["website"]}" target="_blank">${val[field]}</a></td>`;
+          default: // summary
+            return `<td class="p-2 align-top border-b border-gray-200">${val[field]}</td>`;
+        }
+      }
+
+
+      const createTable = (data) => {
+        // create table string and insert it into "app" div before end
+        const rows = Object.entries(data)
+          .map(([key, val], i) => row(key, val, i))
+          .join("");
+
+        const table = `<table class="w-full border-t border-gray-200">${rows}</table>`;
+        document.getElementById("app").insertAdjacentHTML("beforeend", table);
+      }
+
+      const url = "https://api.mtw-testnet.com/assets/all"
+      fetch(url)
+        .then((response) => {
+          return response.json()
+        })
+        .then((v) => createTable(v))
+        .catch((err) => console.log(err))
+    </script>
+    <script src="https://morethanwallet.com/appstore/index.js"></script>
+  </body>
+</html>
